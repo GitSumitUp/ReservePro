@@ -38,7 +38,7 @@ ReservePro is a booking management web application designed to simplify the proc
    npm start
    ```
 
-6. Access the application at `http://localhost:3000`.
+6. Access the application at `http://localhost:8080`.
 
 ## Impact
 ReservePro enhances booking management by automating operations, reducing manual errors, and improving user experience with a streamlined interface.
