@@ -1,16 +1,16 @@
+// routes/bookShelfRoutes.js
 import express from 'express';
-import { addBook, removeBook, getBookshelf } from '../controllers/bookshelfController.js';
-import { authMiddleware } from '../middleware/authMiddlerware.js';
+import { getUserBookshelf, addBookToShelf, removeBookFromShelf } from '../controllers/bookShelfController.js';
 
 const router = express.Router();
 
-// Get the user's bookshelf
-router.get('/', authMiddleware, getBookshelf);
+// Get all books in user's bookshelf
+router.get('/:user_id', getUserBookshelf);
 
-// Add a book to the user's bookshelf
-router.post('/add', authMiddleware, addBook);
+// Add book to bookshelf
+router.post('/', addBookToShelf);
 
-// Remove a book from the user's bookshelf
-router.post('/remove', authMiddleware, removeBook);
+// Remove book from bookshelf
+router.delete('/:shelf_id', removeBookFromShelf);
 
 export default router;

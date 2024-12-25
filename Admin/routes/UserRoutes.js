@@ -1,14 +1,14 @@
 import express from 'express';
-import { getAllBooks, getBookById, createBook, updateBook, deleteBook } from '../controllers/bookingController.js';
+import { getAllUsers, getUserById, createUser, updateUser, deleteUser } from '../controllers/UserController.js';
 //import { roleMiddleware } from '../middleware/roleMiddleware.js';
 
 const router = express.Router();
 
-router.get('/', getAllBooks);
-router.get('/:id', getBookById);
-router.post('/', createBook);  
-router.put('/:id', updateBook); 
-router.delete('/:id', deleteBook); 
+router.get('/', getAllUsers);
+router.get('/:id', getUserById);
+router.post('/', createUser);  
+router.put('/:id', updateUser); 
+router.delete('/:id', deleteUser); 
 
 
 //router.post('/', roleMiddleware(['admin', 'user']), createBook);  

@@ -1,6 +1,6 @@
 import {pool} from '../../dbConnection.js';
 
-export const getAllBooks = async (req, res) => {
+export const getAllUsers = async (req, res) => {
     try {
         const [rows] = await pool.query('SELECT * FROM Bookings');
         res.json(rows);
@@ -9,7 +9,7 @@ export const getAllBooks = async (req, res) => {
     }
 };
 
-export const getBookById = async (req, res) => {
+export const getUserById = async (req, res) => {
     const { id } = req.params;
     try {
         const [rows] = await pool.query('SELECT * FROM Bookings WHERE id = ?', [id]);
@@ -22,7 +22,7 @@ export const getBookById = async (req, res) => {
     }
 };
 
-export const createBook = async (req, res) => {
+export const createUser = async (req, res) => {
     const { customer_name, booking_date, booking_time, total_amount, status, payment_method, duration_minutes } = req.body;
     try {
         const [result] = await sequelize.query('INSERT INTO Bookings (customer_name, booking_date, booking_time, total_amount, status, payment_method, duration_minutes) VALUES (?, ?, ?, ?, ?, ?, ?)', [customer_name, booking_date, booking_time, total_amount, status, payment_method, duration_minutes]);
@@ -32,7 +32,7 @@ export const createBook = async (req, res) => {
     }
 };
 
-export const updateBook = async (req, res) => {
+export const updateUser = async (req, res) => {
     const { id } = req.params;
     const { customer_name, booking_date, booking_time, total_amount, status, payment_method, duration_minutes } = req.body;
     try {
@@ -46,7 +46,7 @@ export const updateBook = async (req, res) => {
     }
 };
 
-export const deleteBook = async (req, res) => {
+export const deleteUser = async (req, res) => {
     const { id } = req.params;
     try {
         const [result] = await sequelize.query('DELETE FROM Bookings WHERE id = ?', [id]);

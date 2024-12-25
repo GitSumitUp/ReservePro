@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Request System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+
+        .message {
+            color: green;
+            margin-top: 10px;
+        }
+
+        #backBtn {
+           background-color: #c0c0c0;
+           color: #333333;
+           border: 1px solid #bfbfbf;
+       }
+      #backBtn:hover {
+        background-color: #e0e0e0;
+     }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Book Request System</h1>
+
+        <h2>Request a Book</h2>
+        <div class="form-group">
+            <label for="user_id">User ID:</label>
+            <input type="text" id="user_id" placeholder="Enter your user ID">
+        </div>
+        <div class="form-group">
+            <label for="book_id">Book ID:</label>
+            <input type="text" id="book_id" placeholder="Enter the book ID">
+        </div>
+        <button onclick="requestBook()">Request Book</button>
+        <p id="requestMessage" class="message"></p>
+
+        <!-- View user requests -->
+        <h2>Your Book Requests</h2>
+        <div class="form-group">
+            <label for="view_user_id">User ID:</label>
+            <input type="text" id="view_user_id" placeholder="Enter your user ID to view requests">
+        </div>
+        <button onclick="getUserRequests()">View Requests</button>
+
+        <table id="requestsTable">
+            <thead>
+                <tr>
+                    <th>Request ID</th>
+                    <th>Book Title</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <p id="errorMessage" class="error"></p>
+
+        <!-- Form to update request status -->
+        <h2>Update Request Status (Admin)</h2>
+        <div class="form-group">
+            <label for="request_id">Request ID:</label>
+            <input type="text" id="request_id" placeholder="Enter the request ID">
+        </div>
+        <div class="form-group">
+            <label for="status">Status:</label>
+            <select id="status">
+                <option value="Pending">Pending</option>
+                <option value="Approved">Approved</option>
+                <option value="Denied">Denied</option>
+            </select>
+        </div>
+        <button onclick="updateRequestStatus()">Update Status</button>
+        <p id="updateMessage" class="message"></p>
+        <button id="backBtn"  onclick="goBack()">Back</button>
+    </div>
+
+    <script>
+        async function requestBook() {
+            const user_id = document.getElementById('user_id').value;
+            const book_id = document.getElementById('book_id').value;
+            const requestMessage = document.getElementById('requestMessage');
+
+            if (!user_id || !book_id) {
+                requestMessage.innerText = 'Please fill in both User ID and Book ID';
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:8080/api/bookrequests/requests`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ user_id, book_id })
+                });
+
+                const data = await response.json();
+                requestMessage.innerText = data.message || 'Request sent successfully!';
+            } catch (error) {
+                requestMessage.innerText = 'Error sending request';
+            }
+        }
+
+        // Function to get user requests (with Update and Delete buttons)
+async function getUserRequests() {
+    const user_id = document.getElementById('view_user_id').value;
+    const requestsTable = document.getElementById('requestsTable').getElementsByTagName('tbody')[0];
+    const errorMessage = document.getElementById('errorMessage');
+    
+    requestsTable.innerHTML = ''; // Clear previous results
+    errorMessage.innerText = ''; // Clear previous errors
+
+    if (!user_id) {
+        errorMessage.innerText = 'Please enter a User ID';
+        return;
+    }
+
+    try {
+        const response = await fetch(`http://localhost:8080/api/bookrequests/requests/${user_id}`);
+        const requests = await response.json();
+
+        if (requests.length === 0) {
+            errorMessage.innerText = 'No requests found for this user';
+            return;
+        }
+
+        // Populate table with requests and Action buttons
+        requests.forEach(request => {
+            const row = requestsTable.insertRow();
+            row.insertCell(0).innerText = request.request_id;
+            row.insertCell(1).innerText = request.title;
+            row.insertCell(2).innerText = request.status;
+
+            // Add Action buttons
+            const actionCell = row.insertCell(3);
+            actionCell.innerHTML = `
+                <button onclick="showUpdateForm(${request.request_id}, '${request.status}')">Update</button>
+                <button onclick="deleteRequest(${request.request_id})">Delete</button>
+            `;
+        });
+    } catch (error) {
+        errorMessage.innerText = 'Error fetching requests';
+    }
+}
+
+// Function to delete a request
+async function deleteRequest(request_id) {
+    try {
+        const response = await fetch(`http://localhost:8080/api/bookrequests/requests/${request_id}`, {
+            method: 'DELETE'
+        });
+
+        const data = await response.json();
+        alert(data.message || 'Request deleted successfully!');
+        getUserRequests();  // Refresh the list after deletion
+    } catch (error) {
+        alert('Error deleting request');
+    }
+}
+
+ // Function to update request status (Admin only)
+ async function updateRequestStatus() {
+    const request_id = document.getElementById('request_id').value;
+    const status = document.getElementById('status').value;
+    const updateMessage = document.getElementById('updateMessage');
+
+    // Reset the message
+    updateMessage.innerText = '';
+
+    // Check for empty values
+    if (!request_id || !status) {
+        updateMessage.innerText = 'Please fill in both Request ID and Status';
+        return;
+    }
+
+    try {
+        // Perform the PUT request
+        const response = await fetch(`http://localhost:8080/api/bookrequests/requests/${request_id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ status })
+        });
+
+        const data = await response.json();
+        
+        // Handle the response
+        if (response.ok) {
+            updateMessage.innerText = 'Request status updated successfully!';
+            getUserRequests();
+            
+            setTimeout(() => {
+                updateMessage.innerText = '';
+            }, 1000); 
+        } else {
+            updateMessage.innerText = data.error || 'Error updating request status';
+        }
+
+    } catch (error) {
+        updateMessage.innerText = 'Error updating request status';
+    }
+}
+
+
+        function showUpdateForm(request_id, currentStatus) {
+             document.getElementById('request_id').value = request_id;
+             document.getElementById('status').value = currentStatus;
+         }
+
+        function goBack() {
+              window.history.back();
+         }
+    </script>
+
+</body>
+</html>

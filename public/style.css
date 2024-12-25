@@ -167,3 +167,28 @@ tr:hover {
 .modal-content button[type="button"]:hover {
     background-color: #e57373;
 }
+
+/* Style for the Go to Book Overview Button */
+#goToBookOverviewBtn {
+    background-color: #007BFF; /* Primary blue color */
+    color: white;              /* White text color */
+    padding: 10px 20px;        /* Add some padding */
+    font-size: 16px;           /* Set a readable font size */
+    border: none;              /* Remove default borders */
+    border-radius: 5px;        /* Slightly rounded corners */
+    cursor: pointer;           /* Show pointer on hover */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+    transition: background-color 0.3s ease;  /* Smooth background color transition */
+}
+
+/* Hover effect */
+#goToBookOverviewBtn:hover {
+    background-color: #0056b3;  /* Darker blue on hover */
+}
+
+/* Active state (when button is clicked) */
+#goToBookOverviewBtn:active {
+    background-color: #004085;  /* Even darker blue when clicked */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);  /* Adjust shadow on click */
+    transform: scale(0.98);  /* Slightly scale down the button on click */
+}

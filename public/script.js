@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const bookingDetailsModal = document.getElementById('bookingDetailsModal');
     const bookingDetails = document.getElementById('bookingDetails');
 
-    const apiUrl = 'http://localhost:8080/api/books';
+    const apiUrl = 'http://localhost:8080/api/users';
     let editingBookingId = null;
 
     function formatDate(isoString) {
@@ -189,3 +189,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     fetchBookings();
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+    const bookOverviewBtn = document.getElementById('goToBookOverviewBtn');
+
+    // Add event listener to the button
+    bookOverviewBtn.addEventListener('click', function () {
+        // Redirect to the Book Overview page
+        window.location.href = './BookOverview/overview.html';
+    });
+});
+

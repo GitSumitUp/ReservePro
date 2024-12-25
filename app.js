@@ -1,10 +1,11 @@
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import bookRoutes from './Admin/routes/bookRoutes.js';
-//import bookshelfRoutes from './User/routes/bookshelfRoutes.js'; 
+import userRoutes from './Admin/routes/UserRoutes.js';
+import bookshelfRoutes from './User/routes/bookshelfRoutes.js'; 
+import bookoverviewRoutes from './Admin/routes/bookOverviewRoute.js'; 
 import authRoutes from './User/routes/authRoutes.js';
-//import bookRequestRoutes from './Admin/routes/bookRequestRoutes.js'; 
+import bookRequestRoutes from './User/routes/bookRequestRoutes.js'; 
 import { testDbConnection } from './dbConnection.js';
 //import authMiddleware from './User/middleware/authMiddlerware.js'; 
 //import authRoutes from './User/routes/authRoutes.js';
@@ -34,13 +35,27 @@ app.get('/login', (req, res) => {
 app.get('/home', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
+
+app.get('/admin/bookOverview', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public/BookOverview', 'overview.html'));
+});
+
+app.get('/user/bookShelf', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public/BookShelf', 'bookShelf.html'));
+});
+
+app.get('/user/bookRequest', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public/BookRequest', 'bookRequest.html'));
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 //app.use(authMiddleware);
 
 app.use('/api/auth', authRoutes); 
-app.use('/api/books', bookRoutes);
-//app.use('/api/bookshelf', bookshelfRoutes); // New route for managing bookshelves
-//app.use('/api/book-requests', bookRequestRoutes); // New route for handling book requests
+app.use('/api/users',userRoutes);
+app.use('/api/bookshelf', bookshelfRoutes); 
+app.use('/api/bookoverview', bookoverviewRoutes); 
+app.use('/api/bookrequests', bookRequestRoutes); 
 
 app.use((err, req, res, next) => {
     console.error(err.stack);

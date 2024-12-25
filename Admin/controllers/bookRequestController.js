@@ -1,66 +1,51 @@
 // controllers/bookRequestController.js
-import {
-    createBookRequest,
-    getAllBookRequests,
-    getBookRequestById,
-    updateBookRequestStatus,
-    deleteBookRequest
-} from '../models/BookRequest.js';
+import { pool } from '../../dbConnection.js';
 
-export const createRequest = async (req, res) => {
+// Get all requests for a specific user
+export const getUserRequests = async (req, res) => {
+    const { user_id } = req.params;
+    try {
+        const [rows] = await pool.query('SELECT br.*, bo.title FROM BookRequest br JOIN BookOverview bo ON br.book_id = bo.book_id WHERE br.user_id = ?', [user_id]);
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+// Request a book
+export const requestBook = async (req, res) => {
     const { user_id, book_id } = req.body;
     try {
-        const requestId = await createBookRequest(user_id, book_id);
-        res.status(201).json({ id: requestId, user_id, book_id, request_status: 'Pending' });
+        await pool.query('INSERT INTO BookRequest (user_id, book_id) VALUES (?, ?)', [user_id, book_id]);
+        res.status(201).json({ message: 'Book request sent!' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 };
 
-export const getAllRequests = async (req, res) => {
-    try {
-        const requests = await getAllBookRequests();
-        res.json(requests);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-};
-
-export const getRequestById = async (req, res) => {
-    const { id } = req.params;
-    try {
-        const request = await getBookRequestById(id);
-        if (!request) {
-            return res.status(404).json({ message: 'Request not found' });
-        }
-        res.json(request);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-};
-
+// Update request status
 export const updateRequestStatus = async (req, res) => {
-    const { id } = req.params;
-    const { request_status } = req.body;
+    const { request_id } = req.params;
+    const { status } = req.body;
     try {
-        const rowsAffected = await updateBookRequestStatus(id, request_status);
-        if (rowsAffected === 0) {
-            return res.status(404).json({ message: 'Request not found' });
-        }
-        res.json({ id, request_status });
+        await pool.query('UPDATE BookRequest SET status = ? WHERE request_id = ?', [status, request_id]);
+        res.json({ message: 'Request status updated!' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 };
 
-export const deleteRequest = async (req, res) => {
-    const { id } = req.params;
+// Delete a book request
+export const deleteBookRequest = async (req, res) => {
+    const { request_id } = req.params;
     try {
-        const rowsAffected = await deleteBookRequest(id);
-        if (rowsAffected === 0) {
-            return res.status(404).json({ message: 'Request not found' });
+        const [result] = await pool.query('DELETE FROM BookRequest WHERE request_id = ?', [request_id]);
+
+        if (result.affectedRows > 0) {
+            res.json({ message: 'Book request deleted successfully!' });
+        } else {
+            res.status(404).json({ message: 'Book request not found!' });
         }
-        res.status(204).send();
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
