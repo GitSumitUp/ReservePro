@@ -1,13 +1,13 @@
-# Hospital Management System
+# ReservePro
 
-Hospital Management System is a comprehensive web application designed to streamline the management of hospital operations. It provides efficient tools for managing patients, appointments, staff, and resources with secure authentication and robust backend integration.
+ReservePro is a booking management web application designed to simplify the process of managing bookings. It allows users to add, update, and delete bookings while ensuring secure access through JWT authentication.
 
 ## Features
-- Manage patient records, appointments, and staff details.
-- User-friendly interface for efficient hospital operations.
-- Secure user authentication and role-based access control.
+- Add, update, and delete bookings.
+- User-friendly interface for managing bookings efficiently.
+- Secure authentication with JSON Web Tokens (JWT).
 - Backend powered by Node.js and Express.js.
-- Database integration using MySQL for data persistence.
+- Database integration using MySQL.
 
 ## Technologies Used
 - **Frontend**: HTML, CSS, JavaScript
@@ -18,11 +18,11 @@ Hospital Management System is a comprehensive web application designed to stream
 ## Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/GitSumitUp/Hospital-Management-System.git
+   git clone https://github.com/yourusername/ReservePro.git
    ```
 2. Navigate to the project directory:
    ```bash
-   cd Hospital-Management-System
+   cd ReservePro
    ```
 3. Install dependencies:
    ```bash
@@ -38,23 +38,18 @@ Hospital Management System is a comprehensive web application designed to stream
    npm start
    ```
 
-6. Access the application at `http://localhost:8080`.
+6. Access the application at `http://localhost:3000`.
 
 ## Impact
-Hospital Management System simplifies healthcare administration by automating routine tasks, reducing manual errors, and improving operational efficiency.
+ReservePro enhances booking management by automating operations, reducing manual errors, and improving user experience with a streamlined interface.
 
 ## Challenges & Learning
-- Designing role-based access control for different user roles enhanced my knowledge of access management.
-- Integrating the database for scalability and handling concurrent operations improved my backend development skills.
+- Implementing JWT for secure authentication strengthened my understanding of security practices.
+- Managing database connections taught me how to optimize API performance for scalability.
 
 ## Future Enhancements
-- Add real-time notifications for critical tasks.
-- Develop a dashboard for analytics and reporting.
-- Introduce multi-language support for diverse user bases.
+- Add role-based access control.
+- Implement real-time notifications for bookings.
 
 ## License
 This project is open-source and available under the [MIT License](LICENSE).
-
-
-### Topics
-Hospital Management Patient Records Appointments Staff Management Secure Authentication Database Integration Node.js Express.js MySQL
